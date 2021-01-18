@@ -258,7 +258,7 @@ int rnnoise_get_size() {
 }
 
 int rnnoise_init(DenoiseState *st, RNNModel *model) {
-  memset(st, 0, sizeof(*st));
+  memset(st, 0, rnnoise_get_size());
   if (model)
     st->rnn.model = model;
   else
