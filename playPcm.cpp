@@ -1,11 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <portaudio.h>
+#include <rnnoise.h>
 #define SAMPLE_RATE 96000
 #define FRAMES_PER_BUFFER 480
 typedef struct
 {
   FILE *file;
+  DenoiseState *rnnoise_state;
 } UserData;
 static int paCallback(const void *inputBuffer, void *outputBuffer,
                       unsigned long framesPerBuffer,
@@ -14,7 +16,10 @@ static int paCallback(const void *inputBuffer, void *outputBuffer,
                       void *userData)
 {
   UserData *data = (UserData *)userData;
+  printf("framesPerBuffer: ");
   float *out = (float *)outputBuffer;
+  int16_t buffer[FRAMES_PER_BUFFER];
+
   size_t bytesRead = fread(out, sizeof(float), framesPerBuffer, data->file);
 
   if (bytesRead < framesPerBuffer)
@@ -22,6 +27,14 @@ static int paCallback(const void *inputBuffer, void *outputBuffer,
     // End of file reached, stop the stream
     return paComplete;
   }
+
+  // 将 int16 转换为 float 并应用 RNNoise
+  // for (int i = 0; i < framesPerBuffer; i++)
+  // {
+  //   out[i] = buffer[i] / 32768.0f;
+  // }
+  // rnnoise_process_frame(data->rnnoise_state, out, out);
+
   return paContinue;
 }
 int main()
@@ -30,6 +43,7 @@ int main()
 
   UserData userData;
   userData.file = fopen("./48000啸叫 pcm.pcm", "rb");
+  userData.rnnoise_state = rnnoise_create(NULL);
 
   if (!userData.file)
   {
@@ -52,11 +66,13 @@ int main()
     return -1;
   }
   Pa_StartStream(stream);
-  printf("Playing PCM file...\n");
+  printf("Playing PCM file...aaaaaaaaaaaaaa\n");
   Pa_Sleep(200000); // Play for 5 seconds (adjust as needed)
   Pa_StopStream(stream);
   Pa_CloseStream(stream);
   fclose(userData.file);
+  rnnoise_destroy(userData.rnnoise_state);
+
   Pa_Terminate();
   return 0;
 }
