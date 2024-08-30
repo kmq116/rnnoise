@@ -364,17 +364,17 @@ OTOOL64 =
 PACKAGE = rnnoise
 PACKAGE_BUGREPORT = jmvalin@jmvalin.ca
 PACKAGE_NAME = rnnoise
-PACKAGE_STRING = rnnoise 0.2-14-gd983458
+PACKAGE_STRING = rnnoise 0.2-15-gf4c7312-dirty
 PACKAGE_TARNAME = rnnoise
 PACKAGE_URL = 
-PACKAGE_VERSION = 0.2-14-gd983458
+PACKAGE_VERSION = 0.2-15-gf4c7312-dirty
 PATH_SEPARATOR = :
 RANLIB = ranlib
 SED = /usr/bin/sed
 SET_MAKE = 
 SHELL = /bin/bash
 STRIP = strip
-VERSION = 0.2-14-gd983458
+VERSION = 0.2-15-gf4c7312-dirty
 abs_builddir = /mnt/c/Users/coder/Desktop/rnnoise-lf/rnnoise
 abs_srcdir = /mnt/c/Users/coder/Desktop/rnnoise-lf/rnnoise
 abs_top_builddir = /mnt/c/Users/coder/Desktop/rnnoise-lf/rnnoise
@@ -1443,6 +1443,11 @@ CLIB = -I./lib/portaudio/include -I$(RNNOISE_INCLUDE) \
 # $^ 代表所有依赖项（这里是 main.cpp）
 $(EXEC): rnnoise_demo.cpp
 	g++ -o $@ $^ $(CLIB)
+
+PLAY_PCM = playPcm
+$(PLAY_PCM): playPcm.cpp
+	g++ -o $@ $^ $(CLIB)
+
 install-deps:
 # 创建 lib 目录，如果它不存在的话
 # 下载 PortAudio 压缩包并解压到 lib 目录
